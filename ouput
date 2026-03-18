@@ -1,0 +1,159 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+void InsertEnd(int value)
+{
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL)
+    {
+        newNode->prev = NULL;
+        head = newNode;
+        return;
+    }
+
+    struct Node* temp = head;
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+
+void Traverse()
+{
+    struct Node* temp = head;
+
+    if (temp == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    while (temp != NULL)
+    {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    printf("\n");
+}
+
+void DeleteBegin()
+{
+    if (head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node* temp = head;
+    head = head->next;
+
+    if (head != NULL)
+        head->prev = NULL;
+
+    free(temp);
+}
+
+void DeleteEnd()
+{
+    if (head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node* temp = head;
+
+    if (temp->next == NULL)
+    {
+        head = NULL;
+        free(temp);
+        return;
+    }
+
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+
+    temp->prev->next = NULL;
+    free(temp);
+}
+
+
+void DeleteValue(int value)
+{
+    if (head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node* temp = head;
+
+    if (temp->data == value)
+    {
+        head = temp->next;
+        if (head != NULL)
+            head->prev = NULL;
+        free(temp);
+        return;
+    }
+
+    while (temp != NULL && temp->data != value)
+    {
+        temp = temp->next;
+    }
+
+    if (temp == NULL)
+    {
+        printf("Value not found\n");
+        return;
+    }
+
+    if (temp->next != NULL)
+        temp->next->prev = temp->prev;
+
+    if (temp->prev != NULL)
+        temp->prev->next = temp->next;
+
+    free(temp);
+}
+
+int main()
+{
+    InsertEnd(10);
+    InsertEnd(20);
+    InsertEnd(30);
+    InsertEnd(40);
+
+    printf("List: ");
+    Traverse();
+
+    DeleteBegin();
+    printf("After deleting from beginning: ");
+    Traverse();
+
+    DeleteEnd();
+    printf("After deleting from end: ");
+    Traverse();
+
+    DeleteValue(20);
+    printf("After deleting value 20: ");
+    Traverse();
+
+    return 0;
+}
